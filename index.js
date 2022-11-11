@@ -92,8 +92,7 @@ async function run() {
     app.post('/PostUploadBuyer', async(req,res) =>{
         const user=req.body;
       console.log(user);
-      
-        const result=await buyerCollection.insertOne(user);
+      const result=await buyerCollection.insertOne(user);
         res.json(result)
     });
   
