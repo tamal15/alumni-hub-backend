@@ -12,8 +12,8 @@ app.use(express.json())
 // pizzahub_bd 
 // OfExTH7qprxutPEi 
 
-/* const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.li1977d.mongodb.net/?retryWrites=true&w=majority`; */
-const uri = "mongodb://localhost:27017"
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.li1977d.mongodb.net/?retryWrites=true&w=majority`; 
+// const uri = "mongodb://localhost:27017"
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
@@ -168,6 +168,15 @@ async function run() {
 
         });
 
+        app.get('/branchshow', async (req, res) => {
+            // const id = req.params.id;
+            const result = await branchCollection.findOne({});
+            res.json(result)
+        });
+
+
+       
+
         // get branch
         app.get("/branch", async (req, res) => {
             const page = req.query.page;
@@ -199,6 +208,17 @@ async function run() {
                 });
             }
 
+        });
+
+        app.get('/branch/:id', async (req, res) => {
+            const id = req.params.id;
+            const result = await branchCollection.findOne({ _id: ObjectId(id) });
+            res.json(result)
+        });
+        app.get('/buyerDetailsproduct/:id', async (req, res) => {
+            const id = req.params.id;
+            const result = await buyerCollection.findOne({ _id: ObjectId(id) });
+            res.json(result)
         });
 
         // contact databse 
