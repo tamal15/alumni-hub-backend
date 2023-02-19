@@ -566,9 +566,9 @@ app.get("/adminShowproduct", async (req, res) => {
                 total_amount: req.body.total_amount,
                 currency: req.body.currency,
                 tran_id: uuidv4(),
-                success_url: 'http://localhost:5000/success',
-                fail_url: 'http://localhost:5000/fail',
-                cancel_url: 'http://localhost:5000/cancel',
+                success_url: 'https://burger-backend.onrender.com/success',
+                fail_url: 'https://burger-backend.onrender.com/fail',
+                cancel_url: 'https://burger-backend.onrender.com/cancel',
                 ipn_url: 'http://yoursite.com/ipn',
                 shipping_method: 'Courier',
                 product_name: "req.body.product_name",
@@ -609,7 +609,7 @@ app.get("/adminShowproduct", async (req, res) => {
             // insert order data into database 
             const order=await paymentCollection.insertOne(data)
             console.log(data)
-            const sslcommer = new SSLCommerzPayment('pizza63d67b1718f34','pizza63d67b1718f34@ssl',false) //true for live default false for sandbox
+            const sslcommer = new SSLCommerzPayment(process.env.STORE_ID,process.env.STORE_PASSWORD,false) //true for live default false for sandbox
             sslcommer.init(data).then(data => {
                 //process the response that got from sslcommerz 
                 //https://developer.sslcommerz.com/doc/v4/#returned-parameters
@@ -634,19 +634,19 @@ app.get("/adminShowproduct", async (req, res) => {
                 }
             
               })
-            res.status(200).redirect(`http://localhost:3000/success/${req.body.tran_id}`)
+            res.status(200).redirect(`https://pizzahub-26bec.web.app/success/${req.body.tran_id}`)
             // res.status(200).json(req.body)
         })
         
         app.post ('/fail', async(req,res)=>{
             // console.log(req.body);
           const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(400).redirect('http://localhost:3000')
+            res.status(400).redirect('https://pizzahub-26bec.web.app')
           })
           app.post ('/cancel', async(req,res)=>{
             // console.log(req.body);
             const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(200).redirect('http://localhost:3000')
+            res.status(200).redirect('https://pizzahub-26bec.web.app')
           })
         
         
