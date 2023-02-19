@@ -511,6 +511,7 @@ app.get("/adminShowproduct", async (req, res) => {
 
 
     // admin update product 
+    // so store the data 
 
     app.get('/update/:id', async(req,res)=>{
         const id=req.params.id;
@@ -648,7 +649,7 @@ app.get("/adminShowproduct", async (req, res) => {
             const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
             res.status(200).redirect('https://pizzahub-26bec.web.app')
           })
-        
+        // store data 
         
           app.get('/orders/:tran_id', async(req,res)=>{
             const id=req.params.tran_id;
