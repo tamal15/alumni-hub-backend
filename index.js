@@ -578,7 +578,7 @@ app.get("/adminShowproduct", async (req, res) => {
                 cus_name: req.body.cus_name,
                 cus_email: req.body.cus_email,
                 date: req.body.date,
-                
+                // data update 
                 status: req.body.status,
                 cartProducts: req.body.cartProducts,
                 // buyerDetails: req.body.email,
@@ -657,6 +657,12 @@ app.get("/adminShowproduct", async (req, res) => {
             console.log(order)
             res.json(order)
           });
+        //   app.get('/orders/:tran_id', async(req,res)=>{
+        //     const id=req.params.tran_id;
+        //     const order =await paymentCollection.findOne({tran_id:id});
+        //     console.log(order)
+        //     res.json(order)
+        //   });
         
         
         
