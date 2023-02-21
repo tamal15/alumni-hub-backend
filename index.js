@@ -443,14 +443,14 @@ async function run() {
 
     // customer order 
 
-    app.get("/my/:email", async (req, res) => {
+    app.get("/my", async (req, res) => {
         // const buyeremail=req.body.emails.map((data)=>data.buyerEmail)
         // console.log(emails)
         // console.log(req.params.email);
         const email = req.params.email;
         console.log(email)
         const result = await paymentCollection
-          .find({ emails: email })
+          .find()
           .toArray();
         res.send(result);
       });
