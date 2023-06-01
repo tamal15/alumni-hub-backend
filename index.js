@@ -37,6 +37,8 @@ async function run() {
         const feedbacksCollection = database.collection('userfeedbacks');
         const resturantCollection = database.collection('resturantProduct');
         const adminUploadPizzaCollection = database.collection('adminPizza');
+        const shareCollection = database.collection('sharePost');
+        const orderFoodCollection = database.collection('orderFoods');
 
 
 
@@ -75,6 +77,25 @@ async function run() {
         const result=await userCollection.updateOne(query,updateDoc);
         res.json(result)
     });
+
+              // update sharepost
+
+              app.put('/postShare', async(req,res)=>{
+                const user=req.body;
+                console.log(user)
+                // const query={email:user.email}
+                const query={code:req.body.code}
+                console.log(query)
+                const updateDoc={
+                    $set:{  
+                        shareName:user.shareName,
+                        // mobile:user.mobile
+                    }
+                }
+                const result=await shareCollection.updateOne(query,updateDoc);
+                console.log(result)
+                res.json(result)
+            });
 
      // user profile email 
      app.get('/updateUser/:email', async(req,res)=>{
@@ -350,6 +371,14 @@ async function run() {
             const data = contactCollection.find({})
             const result = await data.toArray()
             res.json(result)
+        });
+
+        // user Order Food 
+
+        app.get('/userOrder', async(req,res)=>{
+            const userOrders=orderFoodCollection.find({})
+            const orderResult=await userOrders.toArray()
+            res.json(orderResult)
         })
 
         app.get("/buyerproducts/:email", async (req, res) => {
@@ -403,6 +432,23 @@ async function run() {
           console.log(user)
             // console.log(like)
             const result=await feedbacksCollection.insertOne(user);
+            res.json(result)
+        });
+          // sharepost
+        app.post('/sharePost', async(req,res) =>{
+            const user=req.body;
+          console.log(user)
+            // console.log(like)
+            const result=await shareCollection.insertOne(user);
+            res.json(result)
+        });
+
+        // order food
+        app.post('/orderFood', async(req,res) =>{
+            const user=req.body;
+          console.log(user)
+            // console.log(like)
+            const result=await orderFoodCollection.insertOne(user);
             res.json(result)
         });
 
@@ -567,9 +613,9 @@ app.get("/adminShowproduct", async (req, res) => {
                 total_amount: req.body.total_amount,
                 currency: req.body.currency,
                 tran_id: uuidv4(),
-                success_url: 'https://burger-backend.up.railway.app/success',
-                fail_url: 'https://burger-backend.up.railway.app/fail',
-                cancel_url: 'https://burger-backend.up.railway.app/cancel',
+                success_url: 'http://localhost:5000/success',
+                fail_url: 'http://localhost:5000/fail',
+                cancel_url: 'http://localhost:5000/cancel',
                 ipn_url: 'http://yoursite.com/ipn',
                 shipping_method: 'Courier',
                 product_name: "req.body.product_name",
@@ -587,8 +633,13 @@ app.get("/adminShowproduct", async (req, res) => {
                 cus_add1: req.body.cus_add1,
                 cus_add2: 'Dhaka',
                 cus_city: req.body.cus_city,
-                schedules: req.body.schedules,
-                purchase: req.body.purchase,
+                date: req.body.date,
+                code: req.body.code, 
+                item: req.body.item,
+                schedules:req.body.schedules,
+                purchase:req.body.purchase,
+                ShareName: req.body.ShareName,
+                mobile: req.body.mobile,
                 cus_state:  req.body.cus_state,
                 cus_postcode: req.body.cus_postcode,
                 cus_country: req.body.cus_country,
@@ -635,19 +686,19 @@ app.get("/adminShowproduct", async (req, res) => {
                 }
             
               })
-            res.status(200).redirect(`https://pizzahub-26bec.web.app/success/${req.body.tran_id}`)
+            res.status(200).redirect(`http://localhost:3000/success/${req.body.tran_id}`)
             // res.status(200).json(req.body)
         })
         
         app.post ('/fail', async(req,res)=>{
             // console.log(req.body);
           const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(400).redirect('https://pizzahub-26bec.web.app')
+            res.status(400).redirect('http://localhost:3000')
           })
           app.post ('/cancel', async(req,res)=>{
             // console.log(req.body);
             const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(200).redirect('https://pizzahub-26bec.web.app')
+            res.status(200).redirect('http://localhost:3000')
           })
         // store data 
         
@@ -657,6 +708,17 @@ app.get("/adminShowproduct", async (req, res) => {
             console.log(order)
             res.json(order)
           });
+
+
+
+        //   SharepostShow 
+
+       
+        app.get('/sharePostShow', async (req, res) => {
+            const data = shareCollection.find({})
+            const result = await data.toArray()
+            res.json(result)
+        })
         //   app.get('/orders/:tran_id', async(req,res)=>{
         //     const id=req.params.tran_id;
         //     const order =await paymentCollection.findOne({tran_id:id});
