@@ -613,9 +613,9 @@ app.get("/adminShowproduct", async (req, res) => {
                 total_amount: req.body.total_amount,
                 currency: req.body.currency,
                 tran_id: uuidv4(),
-                success_url: 'http://localhost:5000/success',
-                fail_url: 'http://localhost:5000/fail',
-                cancel_url: 'http://localhost:5000/cancel',
+                success_url: 'https://burger-backend.onrender.com/success',
+                fail_url: 'https://burger-backend.onrender.com/fail',
+                cancel_url: 'https://burger-backend.onrender.com/cancel',
                 ipn_url: 'http://yoursite.com/ipn',
                 shipping_method: 'Courier',
                 product_name: "req.body.product_name",
@@ -686,19 +686,19 @@ app.get("/adminShowproduct", async (req, res) => {
                 }
             
               })
-            res.status(200).redirect(`http://localhost:3000/success/${req.body.tran_id}`)
+            res.status(200).redirect(`https://pizzahub-26bec.web.app/success/${req.body.tran_id}`)
             // res.status(200).json(req.body)
         })
         
         app.post ('/fail', async(req,res)=>{
             // console.log(req.body);
           const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(400).redirect('http://localhost:3000')
+            res.status(400).redirect('https://pizzahub-26bec.web.app')
           })
           app.post ('/cancel', async(req,res)=>{
             // console.log(req.body);
             const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(200).redirect('http://localhost:3000')
+            res.status(200).redirect('https://pizzahub-26bec.web.app')
           })
         // store data 
         
