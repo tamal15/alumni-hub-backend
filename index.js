@@ -169,6 +169,13 @@ async function run() {
                     res.json(result)
                 });
 
+                // admin product details 
+                 app.get('/adminDetailsproduct/:id', async (req, res) => {
+                 const id = req.params.id;
+                 const result = await adminUploadPizzaCollection.findOne({ _id: ObjectId(id) });
+                 res.json(result)
+                 });
+
                 app.get("/PostUploadpizza/:email", async (req, res) => {
                     // const buyeremail=req.body.cartProducts.map((data)=>data.buyerEmail)
                     console.log(req.params.email);
@@ -359,6 +366,13 @@ async function run() {
             res.json(result)
         });
 
+        // admin pizza pasta details 
+        app.get('/Detailsproduct/:id', async (req, res) => {
+            const id = req.params.id;
+            const result = await adminUploadPizzaCollection.findOne({ _id: ObjectId(id) });
+            res.json(result)
+        });
+
         // contact databse 
         app.post('/contact', async (req, res) => {
             const data = req.body;
@@ -486,13 +500,23 @@ async function run() {
 
     });
 
+     app.get("/my/:email", async (req, res) => {
+    // const buyeremail=req.body.emails.map((data)=>data.buyerEmail)
+    // console.log(emails)
+    // console.log(req.params.email);
+    const email = req.params.email;
+    console.log(email)
+    const result = await paymentCollection
+      .find({ emails: email })
+      .toArray();
+    res.send(result);
+  });
+
 
     // customer order 
 
-    app.get("/my", async (req, res) => {
-        // const buyeremail=req.body.emails.map((data)=>data.buyerEmail)
-        // console.log(emails)
-        // console.log(req.params.email);
+    app.get("/mys", async (req, res) => {
+       
         const email = req.params.email;
         console.log(email)
         const result = await paymentCollection
