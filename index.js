@@ -15,10 +15,12 @@ app.use(express.json())
 
 // pizzahub_bd 
 // OfExTH7qprxutPEi 
+const uri = `mongodb+srv://carp27711:S0dlPqVP7Ql3ogOS@cluster0.4awdg7q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.li1977d.mongodb.net/?retryWrites=true&w=majority`; 
-// const uri = "mongodb://localhost:27017"
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.li1977d.mongodb.net/?retryWrites=true&w=majority`; 
+// // const uri = "mongodb://localhost:27017"
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
 
@@ -26,7 +28,7 @@ async function run() {
         await client.connect();
         console.log("connected to database");
         // const database = client.db('PizzaHUB');
-        const database = client.db('PizzaHUB');
+        const database = client.db('CarWash');
 
 
         const userCollection = database.collection('users');
@@ -35,10 +37,10 @@ async function run() {
         const contactCollection = database.collection('contact');
         const paymentCollection = database.collection('paymentData');
         const feedbacksCollection = database.collection('userfeedbacks');
-        const resturantCollection = database.collection('resturantProduct');
-        const adminUploadPizzaCollection = database.collection('adminPizza');
+        const resturantCollection = database.collection('carstore');
+        const adminUploadPizzaCollection = database.collection('adminEquipment');
         const shareCollection = database.collection('sharePost');
-        const orderFoodCollection = database.collection('orderFoods');
+        const orderFoodCollection = database.collection('orderEquipment');
 
 
 
@@ -637,9 +639,9 @@ app.get("/adminShowproduct", async (req, res) => {
                 total_amount: req.body.total_amount,
                 currency: req.body.currency,
                 tran_id: uuidv4(),
-                success_url: 'https://backend-burger.onrender.com/success',
-                fail_url: 'https://backend-burger.onrender.com/fail',
-                cancel_url: 'https://backend-burger.onrender.com/cancel',
+                success_url: 'http://localhost:5000/success',
+                fail_url: 'http://localhost:5000/fail',
+                cancel_url: 'http://localhost:5000/cancel',
                 ipn_url: 'http://yoursite.com/ipn',
                 shipping_method: 'Courier',
                 product_name: "req.body.product_name",
@@ -710,19 +712,19 @@ app.get("/adminShowproduct", async (req, res) => {
                 }
             
               })
-            res.status(200).redirect(`https://pizzahub-26bec.web.app/success/${req.body.tran_id}`)
+            res.status(200).redirect(`http://localhost:3000/success/${req.body.tran_id}`)
             // res.status(200).json(req.body)
         })
         
         app.post ('/fail', async(req,res)=>{
             // console.log(req.body);
           const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(400).redirect('https://pizzahub-26bec.web.app')
+            res.status(400).redirect('http://localhost:3000')
           })
           app.post ('/cancel', async(req,res)=>{
             // console.log(req.body);
             const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(200).redirect('https://pizzahub-26bec.web.app')
+            res.status(200).redirect('http://localhost:3000')
           })
         // store data 
         
@@ -764,7 +766,7 @@ app.get("/adminShowproduct", async (req, res) => {
 run().catch(console.dir)
 
 app.get('/', (req, res) => {
-    res.send("online pizzaHUB");
+    res.send("online CarWash Service");
 });
 
 app.listen(port, () => {
