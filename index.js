@@ -37,14 +37,30 @@ async function run() {
         const contactCollection = database.collection('contact');
         const paymentCollection = database.collection('paymentData');
         const feedbacksCollection = database.collection('userfeedbacks');
-        const resturantCollection = database.collection('carstore');
-        const adminUploadPizzaCollection = database.collection('adminEquipment');
+        const carStoreCollection = database.collection('carstore');
+        const adminUploadEquipCollection = database.collection('adminEquipment');
         const shareCollection = database.collection('sharePost');
-        const orderFoodCollection = database.collection('orderEquipment');
+        const orderEquipmentCollection = database.collection('orderEquipment');
+        const telpumpserviceCollection = database.collection('telpump');
 
 
 
         // add database user collection 
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            console.log(user)
+            const result = await userCollection.insertOne(user);
+            // console.log(body)
+            res.json(result);
+
+        });
+        app.get('/userdata', async (req, res) => {
+            
+            const result = await userCollection.find({}).toArray()
+            // console.log(body)
+            res.json(result);
+
+        })
         app.post('/users', async (req, res) => {
             const user = req.body;
             console.log(user)
@@ -144,7 +160,7 @@ async function run() {
         });
 
 
-        //    post product admin burger
+       
         app.post('/PostUploadBuyer', async (req, res) => {
             const user = req.body;
             const result = await buyerCollection.insertOne(user);
@@ -156,25 +172,25 @@ async function run() {
             res.json(result)
         });
 
-        // post product admin pizza 
+        
 
-                //    post product admin burger
+              
                 app.post('/PostUploadpizza', async (req, res) => {
                     const user = req.body;
-                    const result = await adminUploadPizzaCollection.insertOne(user);
+                    const result = await adminUploadEquipCollection.insertOne(user);
                     res.json(result)
                 });
         
 
                 app.get('/PostUploadpizza', async (req, res) => {
-                    const result = await adminUploadPizzaCollection.find({}).toArray()
+                    const result = await adminUploadEquipCollection.find({}).toArray()
                     res.json(result)
                 });
 
                 // admin product details 
                  app.get('/adminDetailsproduct/:id', async (req, res) => {
                  const id = req.params.id;
-                 const result = await adminUploadPizzaCollection.findOne({ _id: ObjectId(id) });
+                 const result = await adminUploadEquipCollection.findOne({ _id: ObjectId(id) });
                  res.json(result)
                  });
 
@@ -191,9 +207,9 @@ async function run() {
 
 
 
-                // get burger product show 
+              
 
-                app.get("/burgershows", async (req, res) => {
+                app.get("/carWashsShow", async (req, res) => {
                     const page = req.query.page;
                     const size = parseInt(req.query.size);
                     const query = req.query;
@@ -309,7 +325,7 @@ async function run() {
         app.post('/branch', async (req, res) => {
             const user = req.body;
             console.log(user)
-            const result = await resturantCollection.insertOne(user);
+            const result = await carStoreCollection.insertOne(user);
             // console.log(body)
             res.json(result);
 
@@ -337,14 +353,45 @@ async function run() {
             });
 
             if (Object.keys(query).length) {
-                const cursor = resturantCollection.find(query, status = "approved");
+                const cursor = carStoreCollection.find(query, status = "approved");
                 const count = await cursor.count()
                 const allData = await cursor.skip(page * size).limit(size).toArray()
                 res.json({
                     allData, count
                 });
             } else {
-                const cursor = resturantCollection.find({
+                const cursor = carStoreCollection.find({
+                    // status: "approved"
+                });
+                const count = await cursor.count()
+                const allData = await cursor.skip(page * size).limit(size).toArray()
+
+                res.json({
+                    allData, count
+                });
+            }
+
+        });
+        app.get("/branchPump", async (req, res) => {
+            const page = req.query.page;
+            const size = parseInt(req.query.size);
+            const query = req.query;
+            delete query.page
+            delete query.size
+            Object.keys(query).forEach(key => {
+                if (!query[key])
+                    delete query[key]
+            });
+
+            if (Object.keys(query).length) {
+                const cursor = telpumpserviceCollection.find(query, status = "approved");
+                const count = await cursor.count()
+                const allData = await cursor.skip(page * size).limit(size).toArray()
+                res.json({
+                    allData, count
+                });
+            } else {
+                const cursor = telpumpserviceCollection.find({
                     // status: "approved"
                 });
                 const count = await cursor.count()
@@ -359,7 +406,12 @@ async function run() {
 
         app.get('/branch/:id', async (req, res) => {
             const id = req.params.id;
-            const result = await resturantCollection.findOne({ _id: ObjectId(id) });
+            const result = await carStoreCollection.findOne({ _id: ObjectId(id) });
+            res.json(result)
+        });
+        app.get('/telpumpdetails/:id', async (req, res) => {
+            const id = req.params.id;
+            const result = await telpumpserviceCollection.findOne({ _id: ObjectId(id) });
             res.json(result)
         });
         app.get('/buyerDetailsproduct/:id', async (req, res) => {
@@ -371,7 +423,7 @@ async function run() {
         // admin pizza pasta details 
         app.get('/Detailsproduct/:id', async (req, res) => {
             const id = req.params.id;
-            const result = await adminUploadPizzaCollection.findOne({ _id: ObjectId(id) });
+            const result = await adminUploadEquipCollection.findOne({ _id: ObjectId(id) });
             res.json(result)
         });
 
@@ -389,10 +441,10 @@ async function run() {
             res.json(result)
         });
 
-        // user Order Food 
+        
 
         app.get('/userOrder', async(req,res)=>{
-            const userOrders=orderFoodCollection.find({})
+            const userOrders=orderEquipmentCollection.find({})
             const orderResult=await userOrders.toArray()
             res.json(orderResult)
         })
@@ -408,9 +460,9 @@ async function run() {
             res.send(result);
         });
 
-        // admin burger and pizza show 
+        // admin 
 
-        app.get("/admiinpizza", async (req, res) => {
+        app.get("/admiinsCars", async (req, res) => {
             const page = req.query.page;
             const size = parseInt(req.query.size);
             const query = req.query;
@@ -422,14 +474,14 @@ async function run() {
             });
 
             if (Object.keys(query).length) {
-                const cursor = adminUploadPizzaCollection.find(query, status = "approved");
+                const cursor = adminUploadEquipCollection.find(query, status = "approved");
                 const count = await cursor.count()
                 const allData = await cursor.skip(page * size).limit(size).toArray()
                 res.json({
                     allData, count
                 });
             } else {
-                const cursor = adminUploadPizzaCollection.find({
+                const cursor = adminUploadEquipCollection.find({
                     // status: "approved"
                 });
                 const count = await cursor.count()
@@ -450,6 +502,10 @@ async function run() {
             const result=await feedbacksCollection.insertOne(user);
             res.json(result)
         });
+        app.get('/feedbacks', async(req,res)=>{
+            const result=await feedbacksCollection.find({}).toArray()
+            res.json(result)
+        });
           // sharepost
         app.post('/sharePost', async(req,res) =>{
             const user=req.body;
@@ -464,22 +520,34 @@ async function run() {
             const user=req.body;
           console.log(user)
             // console.log(like)
-            const result=await orderFoodCollection.insertOne(user);
+            const result=await orderEquipmentCollection.insertOne(user);
             res.json(result)
         });
 
 
-        // resturant name post 
-                app.post('/resturantservice', async(req,res) =>{
+        // carWashsservice name post 
+                app.post('/carWashsservice', async(req,res) =>{
             const user=req.body;
           console.log(user);
           
-            const result=await resturantCollection.insertOne(user);
+            const result=await carStoreCollection.insertOne(user);
+            res.json(result)
+        });
+        // telpump name post 
+                app.post('/telpumpservice', async(req,res) =>{
+            const user=req.body;
+          console.log(user);
+          
+            const result=await telpumpserviceCollection.insertOne(user);
             res.json(result)
         });
 
-         app.get('/resturantservice', async(req,res)=>{
-            const result=await resturantCollection.find({}).toArray()
+         app.get('/carWashsservice', async(req,res)=>{
+            const result=await carStoreCollection.find({}).toArray()
+            res.json(result)
+        });
+         app.get('/pumpService', async(req,res)=>{
+            const result=await telpumpserviceCollection.find({}).toArray()
             res.json(result)
         });
 
@@ -488,13 +556,31 @@ async function run() {
             console.log(req.body)
             // const filter = { _id: ObjectId(req.params.id) };
             const query={
-                BranchName:req.body.BranchName}
+                branch:req.body.branch}
             const options = { upsert: true };
             // const data=req.body
            
                
                     const updateDoc = { $push: { services: req.body } };
-                    const result = await resturantCollection.updateOne(query, updateDoc, options);
+                    const result = await carStoreCollection.updateOne(query, updateDoc, options);
+                    res.json(result)
+                
+              
+
+
+    });
+         app.put('/Singleservice', async (req, res) => {
+        
+            console.log(req.body)
+            // const filter = { _id: ObjectId(req.params.id) };
+            const query={
+                branch:req.body.branch}
+            const options = { upsert: true };
+            // const data=req.body
+           
+               
+                    const updateDoc = { $push: { services: req.body } };
+                    const result = await telpumpserviceCollection.updateOne(query, updateDoc, options);
                     res.json(result)
                 
               
