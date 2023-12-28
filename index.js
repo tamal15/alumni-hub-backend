@@ -773,7 +773,7 @@ app.get("/adminShowproduct", async (req, res) => {
             // insert order data into database 
             const order=await paymentCollection.insertOne(data)
             console.log(data)
-            const sslcommer = new SSLCommerzPayment(process.env.STORE_ID,process.env.STORE_PASSWORD,false) //true for live default false for sandbox
+            const sslcommer = new SSLCommerzPayment('pizza63d67b1718f34', 'pizza63d67b1718f34@ssl',false) //true for live default false for sandbox
             sslcommer.init(data).then(data => {
                 //process the response that got from sslcommerz 
                 //https://developer.sslcommerz.com/doc/v4/#returned-parameters
