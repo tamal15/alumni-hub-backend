@@ -798,19 +798,19 @@ app.get("/adminShowproduct", async (req, res) => {
                 }
             
               })
-            res.status(200).redirect(`https://carwash-a81b0.web.app/success/${req.body.tran_id}`)
+            res.status(200).redirect(`https://onspot-car-service.web.app/success/${req.body.tran_id}`)
             // res.status(200).json(req.body)
         })
         
         app.post ('/fail', async(req,res)=>{
             // console.log(req.body);
           const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(400).redirect('https://carwash-a81b0.web.app')
+            res.status(400).redirect('https://onspot-car-service.web.app')
           })
           app.post ('/cancel', async(req,res)=>{
             // console.log(req.body);
             const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(200).redirect('https://carwash-a81b0.web.app')
+            res.status(200).redirect('https://onspot-car-service.web.app')
           })
         // store data 
         
