@@ -42,6 +42,8 @@ async function run() {
         const shareCollection = database.collection('sharePost');
         const orderEquipmentCollection = database.collection('orderEquipment');
         const telpumpserviceCollection = database.collection('telpump');
+        const bookmacanicCollection = database.collection('bookmacanic');
+        const driverCollection = database.collection('driverdata');
 
 
 
@@ -166,16 +168,25 @@ async function run() {
             const result = await buyerCollection.insertOne(user);
             res.json(result)
         });
+        app.post('/drivercolledted', async (req, res) => {
+            const user = req.body;
+            const result = await driverCollection.insertOne(user);
+            res.json(result)
+        });
 
         app.get('/PostUploadBuyer', async (req, res) => {
             const result = await buyerCollection.find({}).toArray()
+            res.json(result)
+        });
+        app.get('/driverCollect', async (req, res) => {
+            const result = await driverCollection.find({}).toArray()
             res.json(result)
         });
 
         
 
               
-                app.post('/PostUploadpizza', async (req, res) => {
+                app.post('/PostUploads', async (req, res) => {
                     const user = req.body;
                     const result = await adminUploadEquipCollection.insertOne(user);
                     res.json(result)
@@ -264,14 +275,14 @@ async function run() {
             });
 
             if (Object.keys(query).length) {
-                const cursor = buyerCollection.find(query, status = "approved");
+                const cursor = adminUploadEquipCollection.find(query, status = "approved");
                 const count = await cursor.count()
                 const allData = await cursor.skip(page * size).limit(size).toArray()
                 res.json({
                     allData, count
                 });
             } else {
-                const cursor = buyerCollection.find({
+                const cursor = adminUploadEquipCollection.find({
                     // status: "approved"
                 });
                 const count = await cursor.count()
@@ -493,6 +504,26 @@ async function run() {
             }
 
         });
+
+         app.post('/bookmacanic', async (req, res) => {
+      const user = req.body;
+      console.log(user);
+
+      const result = await bookmacanicCollection.insertOne(user);
+      res.json(result)
+    });
+
+    // booking electrician 
+    app.get("/bookingMachanic/:email", async (req, res) => {
+      // const buyeremail=req.body.cartProducts.map((data)=>data.buyerEmail)
+      console.log(req.params.email);
+      const email = req.params.email;
+      const result = await bookmacanicCollection
+        .find({ userEmail: email })
+        .toArray();
+        console.log(result)
+      res.send(result);
+    });
 
           // feedback 
         app.post('/feedbacks', async(req,res) =>{
