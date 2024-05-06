@@ -13,31 +13,39 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 app.use(express.json())
 
-// pizzahub_bd 
-// OfExTH7qprxutPEi 
-const uri = `mongodb+srv://carp27711:S0dlPqVP7Ql3ogOS@cluster0.4awdg7q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+// projectdefence9 
+// yVWKJRh1rYivqCfF 
 
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.li1977d.mongodb.net/?retryWrites=true&w=majority`; 
-// // const uri = "mongodb://localhost:27017"
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+// const uri = `mongodb+srv://carp27711:S0dlPqVP7Ql3ogOS@cluster0.4awdg7q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const uri = "mongodb+srv://projectdefence9:yVWKJRh1rYivqCfF@cluster0.7dyjpba.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
 
 async function run() {
 
     try {
         await client.connect();
         console.log("connected to database");
-        // const database = client.db('PizzaHUB');
-        const database = client.db('CarWash');
+       
+        const database = client.db('AlumniHub');
 
 
         const userCollection = database.collection('users');
-        const buyerCollection = database.collection('buyerproducts');
-        const branchCollection = database.collection('branchName');
+        const developerCollection = database.collection('developer');
+        const homePostCollection = database.collection('HomePost');
         const contactCollection = database.collection('contact');
         const paymentCollection = database.collection('paymentData');
         const feedbacksCollection = database.collection('userfeedbacks');
-        const carStoreCollection = database.collection('carstore');
+        const projectCollection = database.collection('project');
         const adminUploadEquipCollection = database.collection('adminEquipment');
         const shareCollection = database.collection('sharePost');
         const orderEquipmentCollection = database.collection('orderEquipment');
@@ -54,8 +62,8 @@ async function run() {
             const result = await userCollection.insertOne(user);
             // console.log(body)
             res.json(result);
-
         });
+
         app.get('/userdata', async (req, res) => {
             
             const result = await userCollection.find({}).toArray()
@@ -63,6 +71,7 @@ async function run() {
             res.json(result);
 
         })
+
         app.post('/users', async (req, res) => {
             const user = req.body;
             console.log(user)
@@ -154,23 +163,28 @@ async function run() {
             const email = req.params.email;
             const query = { email: email }
             const user = await userCollection.findOne(query)
-            let isbuyer = false;
-            if (user?.client === 'buyer') {
-                isbuyer = true;
+            let isalumni = false;
+            if (user?.client === 'alumni') {
+                isalumni = true;
             }
-            res.json({ buyer: isbuyer })
+            res.json({ alumni: isalumni })
         });
 
 
        
-        app.post('/PostUploadBuyer', async (req, res) => {
+        app.post('/homePostCollection', async (req, res) => {
             const user = req.body;
-            const result = await buyerCollection.insertOne(user);
+            const result = await homePostCollection.insertOne(user);
             res.json(result)
         });
-        app.post('/drivercolledted', async (req, res) => {
+        app.post('/developer', async (req, res) => {
             const user = req.body;
-            const result = await driverCollection.insertOne(user);
+            const result = await developerCollection.insertOne(user);
+            res.json(result)
+        });
+        app.post('/project', async (req, res) => {
+            const user = req.body;
+            const result = await projectCollection.insertOne(user);
             res.json(result)
         });
 
@@ -193,19 +207,15 @@ async function run() {
                 });
         
 
-                app.get('/PostUploadpizza', async (req, res) => {
+                app.get('/PostUpload', async (req, res) => {
                     const result = await adminUploadEquipCollection.find({}).toArray()
                     res.json(result)
                 });
 
                 // admin product details 
-                 app.get('/adminDetailsproduct/:id', async (req, res) => {
-                 const id = req.params.id;
-                 const result = await adminUploadEquipCollection.findOne({ _id: ObjectId(id) });
-                 res.json(result)
-                 });
+               
 
-                app.get("/PostUploadpizza/:email", async (req, res) => {
+                app.get("/PostUpload/:email", async (req, res) => {
                     // const buyeremail=req.body.cartProducts.map((data)=>data.buyerEmail)
                     console.log(req.params.email);
                     const email = req.params.email;
@@ -263,7 +273,7 @@ async function run() {
 
       
         // get burger
-        app.get("/products", async (req, res) => {
+        app.get("/homepagedata", async (req, res) => {
             const page = req.query.page;
             const size = parseInt(req.query.size);
             const query = req.query;
@@ -275,14 +285,14 @@ async function run() {
             });
 
             if (Object.keys(query).length) {
-                const cursor = adminUploadEquipCollection.find(query, status = "approved");
+                const cursor = homePostCollection.find(query, status = "approved");
                 const count = await cursor.count()
                 const allData = await cursor.skip(page * size).limit(size).toArray()
                 res.json({
                     allData, count
                 });
             } else {
-                const cursor = adminUploadEquipCollection.find({
+                const cursor = homePostCollection.find({
                     // status: "approved"
                 });
                 const count = await cursor.count()
@@ -294,6 +304,79 @@ async function run() {
             }
 
         });
+
+
+        // get developer 
+        app.get("/getdeveloper", async (req, res) => {
+            const page = req.query.page;
+            const size = parseInt(req.query.size);
+            const query = req.query;
+            delete query.page
+            delete query.size
+            Object.keys(query).forEach(key => {
+                if (!query[key])
+                    delete query[key]
+            });
+
+            if (Object.keys(query).length) {
+                const cursor = developerCollection.find(query, status = "approved");
+                const count = await cursor.count()
+                const allData = await cursor.skip(page * size).limit(size).toArray()
+                res.json({
+                    allData, count
+                });
+            } else {
+                const cursor = developerCollection.find({
+                    // status: "approved"
+                });
+                const count = await cursor.count()
+                const allData = await cursor.skip(page * size).limit(size).toArray()
+
+                res.json({
+                    allData, count
+                });
+            }
+
+        });
+        app.get("/project", async (req, res) => {
+            const page = req.query.page;
+            const size = parseInt(req.query.size);
+            const query = req.query;
+            delete query.page
+            delete query.size
+            Object.keys(query).forEach(key => {
+                if (!query[key])
+                    delete query[key]
+            });
+
+            if (Object.keys(query).length) {
+                const cursor = projectCollection.find(query, status = "approved");
+                const count = await cursor.count()
+                const allData = await cursor.skip(page * size).limit(size).toArray()
+                res.json({
+                    allData, count
+                });
+            } else {
+                const cursor = projectCollection.find({
+                    // status: "approved"
+                });
+                const count = await cursor.count()
+                const allData = await cursor.skip(page * size).limit(size).toArray()
+
+                res.json({
+                    allData, count
+                });
+            }
+
+        });
+
+        app.get('/detailsdeveloper/:id', async (req, res) => {
+            const id = req.params.id;
+            const result = await developerCollection.findOne({ _id: ObjectId(id) });
+            res.json(result)
+            });
+
+        
 
 
         // myorder show 
@@ -587,18 +670,30 @@ async function run() {
             console.log(req.body)
             // const filter = { _id: ObjectId(req.params.id) };
             const query={
-                branch:req.body.branch}
+                userName:req.body.userName}
             const options = { upsert: true };
             // const data=req.body
            
                
-                    const updateDoc = { $push: { services: req.body } };
-                    const result = await carStoreCollection.updateOne(query, updateDoc, options);
+                    const updateDoc = { $push: { comment: req.body } };
+                    const result = await homePostCollection.updateOne(query, updateDoc, options);
                     res.json(result)
-                
-              
 
+    });
 
+    app.put("/commentUpdate/:id", async (req, res) => {
+        // console.log(req.body)
+    
+        const filter = { _id: ObjectId(req.params.id) };
+        
+        const result = await homePostCollection.updateOne(filter, {
+            $push: {
+                comment: req.body.comment,
+            },
+            
+        });
+        // console.log(result)
+        res.send(result);
     });
          app.put('/Singleservice', async (req, res) => {
         
@@ -756,9 +851,9 @@ app.get("/adminShowproduct", async (req, res) => {
                 total_amount: req.body.total_amount,
                 currency: req.body.currency,
                 tran_id: uuidv4(),
-                success_url: 'https://carwash-efw3.onrender.com/success',
-                fail_url: 'https://carwash-efw3.onrender.com/fail',
-                cancel_url: 'https://carwash-efw3.onrender.com/cancel',
+                success_url: 'http://localhost:5000/success',
+                fail_url: 'http://localhost:5000/fail',
+                cancel_url: 'http://localhost:5000/cancel',
                 ipn_url: 'http://yoursite.com/ipn',
                 shipping_method: 'Courier',
                 product_name: "req.body.product_name",
@@ -829,19 +924,19 @@ app.get("/adminShowproduct", async (req, res) => {
                 }
             
               })
-            res.status(200).redirect(`https://onspot-car-service.web.app/success/${req.body.tran_id}`)
+            res.status(200).redirect(`http://localhost:3000/success/${req.body.tran_id}`)
             // res.status(200).json(req.body)
         })
         
         app.post ('/fail', async(req,res)=>{
             // console.log(req.body);
           const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(400).redirect('https://onspot-car-service.web.app')
+            res.status(400).redirect('http://localhost:3000')
           })
           app.post ('/cancel', async(req,res)=>{
             // console.log(req.body);
             const order=await paymentCollection.deleteOne({tran_id:req.body.tran_id})
-            res.status(200).redirect('https://onspot-car-service.web.app')
+            res.status(200).redirect('http://localhost:3000')
           })
         // store data 
         
