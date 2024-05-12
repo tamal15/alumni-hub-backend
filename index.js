@@ -16,7 +16,7 @@ app.use(express.json())
 // projectdefence9 
 // yVWKJRh1rYivqCfF 
 
-// const uri = `mongodb+srv://carp27711:S0dlPqVP7Ql3ogOS@cluster0.4awdg7q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+// const uri = `mongodb+srv://cap27711:S0dlPqVP7Ql3ogOS@cluster0.4awdg7q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -46,12 +46,7 @@ async function run() {
         const paymentCollection = database.collection('paymentData');
         const feedbacksCollection = database.collection('userfeedbacks');
         const projectCollection = database.collection('project');
-        const adminUploadEquipCollection = database.collection('adminEquipment');
         const shareCollection = database.collection('sharePost');
-        const orderEquipmentCollection = database.collection('orderEquipment');
-        const telpumpserviceCollection = database.collection('telpump');
-        const bookmacanicCollection = database.collection('bookmacanic');
-        const driverCollection = database.collection('driverdata');
 
 
 
@@ -192,10 +187,7 @@ async function run() {
             const result = await buyerCollection.find({}).toArray()
             res.json(result)
         });
-        app.get('/driverCollect', async (req, res) => {
-            const result = await driverCollection.find({}).toArray()
-            res.json(result)
-        });
+     
 
         
 
@@ -230,49 +222,15 @@ async function run() {
 
               
 
-                app.get("/carWashsShow", async (req, res) => {
-                    const page = req.query.page;
-                    const size = parseInt(req.query.size);
-                    const query = req.query;
-                    delete query.page
-                    delete query.size
-                    Object.keys(query).forEach(key => {
-                        if (!query[key])
-                            delete query[key]
-                    });
-            
-                    if (Object.keys(query).length) {
-                        const cursor = buyerCollection.find(query, status = "approved");
-                        const count = await cursor.count()
-                        const allQuestions = await cursor.skip(page * size).limit(size).toArray()
-                        res.json({
-                            allQuestions, count
-                        });
-                    } else {
-                        const cursor = buyerCollection.find({
-                            // status: "approved"
-                        });
-                        const count = await cursor.count()
-                        const allQuestions = await cursor.skip(page * size).limit(size).toArray()
-            
-                        res.json({
-                            allQuestions, count
-                        });
-                    }
-            
-                });
+               
 
 
-        app.get('/UploadBuyerProduct/:id', async (req, res) => {
-            const id = req.params.id;
-            const result = await buyerCollection.findOne({ _id: ObjectId(id) });
-            res.json(result)
-        });
+       
 
 
 
       
-        // get burger
+        // get homedata
         app.get("/homepagedata", async (req, res) => {
             const page = req.query.page;
             const size = parseInt(req.query.size);
@@ -415,111 +373,17 @@ async function run() {
             res.json(result)
         });
 
-        //   branch name 
-        app.post('/branch', async (req, res) => {
-            const user = req.body;
-            console.log(user)
-            const result = await carStoreCollection.insertOne(user);
-            // console.log(body)
-            res.json(result);
-
-        });
-
-        app.get('/branchshow', async (req, res) => {
-            // const id = req.params.id;
-            const result = await branchCollection.findOne({});
-            res.json(result)
-        });
-
+       
 
        
 
-        // get branch
-        app.get("/branch", async (req, res) => {
-            const page = req.query.page;
-            const size = parseInt(req.query.size);
-            const query = req.query;
-            delete query.page
-            delete query.size
-            Object.keys(query).forEach(key => {
-                if (!query[key])
-                    delete query[key]
-            });
+       
 
-            if (Object.keys(query).length) {
-                const cursor = carStoreCollection.find(query, status = "approved");
-                const count = await cursor.count()
-                const allData = await cursor.skip(page * size).limit(size).toArray()
-                res.json({
-                    allData, count
-                });
-            } else {
-                const cursor = carStoreCollection.find({
-                    // status: "approved"
-                });
-                const count = await cursor.count()
-                const allData = await cursor.skip(page * size).limit(size).toArray()
+      
+       
+       
 
-                res.json({
-                    allData, count
-                });
-            }
-
-        });
-        app.get("/branchPump", async (req, res) => {
-            const page = req.query.page;
-            const size = parseInt(req.query.size);
-            const query = req.query;
-            delete query.page
-            delete query.size
-            Object.keys(query).forEach(key => {
-                if (!query[key])
-                    delete query[key]
-            });
-
-            if (Object.keys(query).length) {
-                const cursor = telpumpserviceCollection.find(query, status = "approved");
-                const count = await cursor.count()
-                const allData = await cursor.skip(page * size).limit(size).toArray()
-                res.json({
-                    allData, count
-                });
-            } else {
-                const cursor = telpumpserviceCollection.find({
-                    // status: "approved"
-                });
-                const count = await cursor.count()
-                const allData = await cursor.skip(page * size).limit(size).toArray()
-
-                res.json({
-                    allData, count
-                });
-            }
-
-        });
-
-        app.get('/branch/:id', async (req, res) => {
-            const id = req.params.id;
-            const result = await carStoreCollection.findOne({ _id: ObjectId(id) });
-            res.json(result)
-        });
-        app.get('/telpumpdetails/:id', async (req, res) => {
-            const id = req.params.id;
-            const result = await telpumpserviceCollection.findOne({ _id: ObjectId(id) });
-            res.json(result)
-        });
-        app.get('/buyerDetailsproduct/:id', async (req, res) => {
-            const id = req.params.id;
-            const result = await buyerCollection.findOne({ _id: ObjectId(id) });
-            res.json(result)
-        });
-
-        // admin pizza pasta details 
-        app.get('/Detailsproduct/:id', async (req, res) => {
-            const id = req.params.id;
-            const result = await adminUploadEquipCollection.findOne({ _id: ObjectId(id) });
-            res.json(result)
-        });
+        
 
         // contact databse 
         app.post('/contact', async (req, res) => {
@@ -554,59 +418,10 @@ async function run() {
             res.send(result);
         });
 
-        // admin 
+       
 
-        app.get("/admiinsCars", async (req, res) => {
-            const page = req.query.page;
-            const size = parseInt(req.query.size);
-            const query = req.query;
-            delete query.page
-            delete query.size
-            Object.keys(query).forEach(key => {
-                if (!query[key])
-                    delete query[key]
-            });
 
-            if (Object.keys(query).length) {
-                const cursor = adminUploadEquipCollection.find(query, status = "approved");
-                const count = await cursor.count()
-                const allData = await cursor.skip(page * size).limit(size).toArray()
-                res.json({
-                    allData, count
-                });
-            } else {
-                const cursor = adminUploadEquipCollection.find({
-                    // status: "approved"
-                });
-                const count = await cursor.count()
-                const allData = await cursor.skip(page * size).limit(size).toArray()
-
-                res.json({
-                    allData, count
-                });
-            }
-
-        });
-
-         app.post('/bookmacanic', async (req, res) => {
-      const user = req.body;
-      console.log(user);
-
-      const result = await bookmacanicCollection.insertOne(user);
-      res.json(result)
-    });
-
-    // booking electrician 
-    app.get("/bookingMachanic/:email", async (req, res) => {
-      // const buyeremail=req.body.cartProducts.map((data)=>data.buyerEmail)
-      console.log(req.params.email);
-      const email = req.params.email;
-      const result = await bookmacanicCollection
-        .find({ userEmail: email })
-        .toArray();
-        console.log(result)
-      res.send(result);
-    });
+  
 
           // feedback 
         app.post('/feedbacks', async(req,res) =>{
@@ -629,41 +444,12 @@ async function run() {
             res.json(result)
         });
 
-        // order food
-        app.post('/orderFood', async(req,res) =>{
-            const user=req.body;
-          console.log(user)
-            // console.log(like)
-            const result=await orderEquipmentCollection.insertOne(user);
-            res.json(result)
-        });
+    
 
 
-        // carWashsservice name post 
-                app.post('/carWashsservice', async(req,res) =>{
-            const user=req.body;
-          console.log(user);
-          
-            const result=await carStoreCollection.insertOne(user);
-            res.json(result)
-        });
-        // telpump name post 
-                app.post('/telpumpservice', async(req,res) =>{
-            const user=req.body;
-          console.log(user);
-          
-            const result=await telpumpserviceCollection.insertOne(user);
-            res.json(result)
-        });
+      
 
-         app.get('/carWashsservice', async(req,res)=>{
-            const result=await carStoreCollection.find({}).toArray()
-            res.json(result)
-        });
-         app.get('/pumpService', async(req,res)=>{
-            const result=await telpumpserviceCollection.find({}).toArray()
-            res.json(result)
-        });
+        
 
          app.put('/service', async (req, res) => {
         
@@ -727,18 +513,6 @@ async function run() {
   });
 
 
-    // customer order 
-
-    app.get("/mys", async (req, res) => {
-       
-        const email = req.params.email;
-        console.log(email)
-        const result = await paymentCollection
-          .find()
-          .toArray();
-        res.send(result);
-      });
-
       // upadate status for put api 
  app.put('/updateStatus/:id', async(req,res)=>{
     const id=req.params.id;
@@ -752,89 +526,15 @@ async function run() {
     res.json(result)
 });
 
-// Delete manage all product ----------
-app.delete("/manageAllOrderDelete/:id", async (req, res) => {
-    const result = await paymentCollection.deleteOne({_id:ObjectId(req.params.id)});
-    res.send(result);
-  });
 
 
 
-//   admin all product show 
-app.get("/adminShowproduct", async (req, res) => {
-        const page = req.query.page;
-        const size = parseInt(req.query.size);
-        const query = req.query;
-        delete query.page
-        delete query.size
-        Object.keys(query).forEach(key => {
-            if (!query[key])
-                delete query[key]
-        });
-
-        if (Object.keys(query).length) {
-            const cursor = buyerCollection.find(query, status = "approved");
-            const count = await cursor.count()
-            const allQuestions = await cursor.skip(page * size).limit(size).toArray()
-            res.json({
-                allQuestions, count
-            });
-        } else {
-            const cursor = buyerCollection.find({
-                // status: "approved"
-            });
-            const count = await cursor.count()
-            const allQuestions = await cursor.skip(page * size).limit(size).toArray()
-
-            res.json({
-                allQuestions, count
-            });
-        }
-
-    });
+   
 
 
-    // admin update product 
-    // so store the data 
+    
 
-    app.get('/update/:id', async(req,res)=>{
-        const id=req.params.id;
-        const query={_id:ObjectId(id)};
-        const user=await buyerCollection.findOne(query)
-        res.json(user)
-    });
-
-
-    // update product 
-
-    app.put("/updateProduct/:id", async (req, res) => {
-
-        const id=req.params.id;
-        const updateUser=req.body
-        console.log(updateUser)
-        const filter={_id: ObjectId(id)};
-        const options={upsert:true};
-
-        const updateDoc={
-            $set:{
-                productName:updateUser.productName,
-                ProductPrice:updateUser.ProductPrice
-            }
-        }
-        const result=await buyerCollection.updateOne(filter,updateDoc,options);
-        console.log('uodateinf',id);
-        res.json(result)
-
-    });
-
-
-    // admin product delete 
-
-    app.delete('/deleteadmin/:id',async(req,res)=>{
-        const result= await buyerCollection.deleteOne({_id:ObjectId(req.params.id)});
-        res.json(result)
-    });
-
+   
 
         // ssl commerce init 
 
@@ -968,7 +668,7 @@ app.get("/adminShowproduct", async (req, res) => {
         
 
 
-    }
+    }   
 
     finally {
         // await client.close();
@@ -978,7 +678,7 @@ app.get("/adminShowproduct", async (req, res) => {
 run().catch(console.dir)
 
 app.get('/', (req, res) => {
-    res.send("online CarWash Service");
+    res.send("Alumni Hub");
 });
 
 app.listen(port, () => {
