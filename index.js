@@ -46,6 +46,7 @@ async function run() {
         const paymentCollection = database.collection('paymentData');
         const feedbacksCollection = database.collection('userfeedbacks');
         const projectCollection = database.collection('project');
+        const noteCollection = database.collection('note');
         const shareCollection = database.collection('sharePost');
 
 
@@ -182,6 +183,11 @@ async function run() {
             const result = await projectCollection.insertOne(user);
             res.json(result)
         });
+        app.post('/note', async (req, res) => {
+            const user = req.body;
+            const result = await noteCollection.insertOne(user);
+            res.json(result)
+        });
 
         app.get('/PostUploadBuyer', async (req, res) => {
             const result = await buyerCollection.find({}).toArray()
@@ -201,6 +207,12 @@ async function run() {
 
                 app.get('/PostUpload', async (req, res) => {
                     const result = await adminUploadEquipCollection.find({}).toArray()
+                    res.json(result)
+                });
+
+                // note 
+                app.get('/shownote', async (req, res) => {
+                    const result = await noteCollection.find({}).toArray()
                     res.json(result)
                 });
 
@@ -528,6 +540,53 @@ async function run() {
 
 
 
+// ================================Like in post====================================================
+        //Link post----------------------------------------------------------------------------------------
+        app.put('/like/:id', async (req, res) => {
+            try {
+                // console.log(req.body)
+                const filter = { _id: ObjectId(req.params.id) };
+                const post = await homePostCollection.findOne(filter);
+                const check = post?.likes?.filter(like => like?.email?.toString() === req?.body?.email).length;
+                if (!check) {
+                    const options = { upsert: true };
+                    const updateDoc = { $push: { likes: req.body } };
+                    const result = await homePostCollection.updateOne(filter, updateDoc, options);
+                    res.status(200).json(result)
+                } else {
+                    return res.status(400).json({ massage: "Post has not yet been liked" });
+                }
+
+            } catch (err) {
+                res.status(500).send('Server Error')
+            }
+
+        })
+
+
+
+
+            //unLink post-----------------------------------------------------------------------------------------
+            app.put('/unlike/:id', async (req, res) => {
+                try {
+                    const filter = { _id: ObjectId(req.params.id) };
+                    const post = await homePostCollection.findOne(filter);
+                    const check = post?.likes?.filter(like => like?.email?.toString() === req?.body?.email).length;
+                    if (check) {
+                        const removeIndex = post?.likes?.filter(like => like.email.toString() !== req.body.email);
+                        const options = { upsert: true };
+                        const updateDoc = { $set: { likes: removeIndex } };
+                        const result = await homePostCollection.updateOne(filter, updateDoc, options);
+                        res.status(200).json(result,)
+                    } else {
+                        return res.status(400).json({ massage: "Post has not yet been liked" });
+                    }
+                } catch (err) {
+                    res.status(500).send('Server Error')
+                }
+            })
+    
+    // ==========================================================================================
 
    
 
