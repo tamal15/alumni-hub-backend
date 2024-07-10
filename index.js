@@ -252,6 +252,14 @@ async function run() {
         const result=await userCollection.findOne(query)
         res.json(result)
     });
+         // details show admin produt
+     app.get('/userprofiledetails/:id', async(req,res)=>{
+        const id=req.params.id
+        const query={_id:new ObjectId(id)}
+        const result=await addfriendCollection.findOne(query)
+        res.json(result)
+    });
+        
          // details group data
      app.get('/groupdatacollected/:id', async(req,res)=>{
         const id=req.params.id
